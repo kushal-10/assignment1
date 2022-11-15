@@ -10,7 +10,7 @@ TWEETS_ANNO = './data/NAACL_SRW_2016.csv'
 TWEETS_TEXT = './data/NAACL_SRW_2016_tweets.json'
 
 
-# MODEL_DICT = {'naive-bayes': NaiveBayes, 'logreg': LogReg}
+MODEL_DICT = {'naive-bayes': NaiveBayes, 'logreg': LogReg}
 
 
 def main():
@@ -18,12 +18,12 @@ def main():
         description='Train naive bayes or logistic regression'
     )
 
-    # parser.add_argument(
-    #     '--model', dest='model',
-    #     choices=['naive-bayes', 'logreg'],
-    #     help='{naive-bayes, logreg}', type=str,
-    #     required=True
-    # )
+    parser.add_argument(
+        '--model', dest='model',
+        choices=['naive-bayes', 'logreg'],
+        help='{naive-bayes, logreg}', type=str,
+        required=True
+    )
     #
     # parser.add_argument(
     #     '--test_smooth', dest='test_smooth',
@@ -41,29 +41,23 @@ def main():
 
     (train_data, test_data) = read_hate_tweets(TWEETS_ANNO, TWEETS_TEXT)
 
-    # model = MODEL_DICT[args.model]
+    model = MODEL_DICT[args.model]
 
-    # MY TEST CODE ####################################################
+    # print(test_data[0])
+    if args.model == 'naive-bayes':
+        print("Training naive bayes classifier...")
+        nb = model.train(train_data)
+        print("Accuracy: ", accuracy(nb, test_data))
+        print("F_1: ", f_1(nb, test_data))
 
+        # if args.test_smooth:
+        #     train_smooth(train_data, test_data)
 
-
-    # MY TEST CODE #####################################################
-
-
-# if args.model == 'naive-bayes':
-#     print("Training naive bayes classifier...")
-#     nb = model.train(train_data)
-#     print("Accuracy: ", accuracy(nb, test_data))
-#     print("F_1: ", f_1(nb, test_data))
-#
-#     if args.test_smooth:
-#         train_smooth(train_data, test_data)
-#
-#     if args.feature_eng:
-#         train_feature_eng(train_data, test_data)
-# else:
-#     print("Training logistic regression classifier...")
-#     train_logreg(train_data, test_data)
+        # if args.feature_eng:
+        #     train_feature_eng(train_data, test_data)
+    else:
+        print("Training logistic regression classifier...")
+        train_logreg(train_data, test_data)
 
 
 if __name__ == "__main__":
