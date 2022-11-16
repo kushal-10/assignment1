@@ -5,7 +5,7 @@ from evaluation import accuracy, f_1
 from model.naivebayes import NaiveBayes
 from model.logreg import LogReg
 from helper import train_smooth, train_feature_eng, train_logreg
-
+import numpy as np
 TWEETS_ANNO = './data/NAACL_SRW_2016.csv'
 TWEETS_TEXT = './data/NAACL_SRW_2016_tweets.json'
 
@@ -17,9 +17,19 @@ V = []
 def main():
     (train_data, test_data) = read_hate_tweets(TWEETS_ANNO, TWEETS_TEXT)
     alpha = 1
-    train(train_data, alpha)
-    X = ["I", "DO", "BELIEVE", "LIFE", "IS", "GOOD"]
-    predict(X)
+    # train(train_data, alpha)
+    # X = ["I", "DO", "BELIEVE", "LIFE", "IS", "GOOD"]
+    # predict(X)
+    c = [1 ,2, 3]
+    np.resize(c, (3,1))
+    print(np.shape(c))
+    # print(r,r1)
+
+def voc():
+    X = [1,2,3]
+    Y = [3,4,5]
+    return X, Y
+
 
 
 def ln(x):
