@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import numpy as np
 
 from model.naivebayes import NaiveBayes, features1, features2
 from model.logreg import LogReg, featurize
@@ -19,7 +20,6 @@ def train_smooth(train_data, test_data):
     ####################################################################
 
 
-
 def train_feature_eng(train_data, test_data):
     # YOUR CODE HERE
     #     TODO:
@@ -29,7 +29,6 @@ def train_feature_eng(train_data, test_data):
     ########################### STUDENT SOLUTION ########################
     pass
     #####################################################################
-
 
 
 def train_logreg(train_data, test_data):
@@ -45,5 +44,40 @@ def train_logreg(train_data, test_data):
     #         with parameter C=0.1.
     #         4) Evaluate the model on the test set.
     ########################### STUDENT SOLUTION ########################
-    pass
+    X_train, Y_train = featurize(train_data)
+    X_test, Y_test = featurize(test_data)
+
+    # X_train = X_train[0:7]
+    # Y_train = Y_train[0:7]
+    final_weights = LogReg(0.01, 10).train(X_train, Y_train)
+    # print(final_weights)
+
+    # Evaluation
+    # X_test = X_test[0:10]
+    # Y_test = Y_test[0:10]
+
+    y_test = np.dot(X_test, final_weights)
+
+    # print(y_test)
+    # print(y_test[6])
+    for i in range(0, len(y_test)):
+        y_test[i] = float(np.exp(y_test[i])) / float(np.exp(y_test[i]) + 1)
+    # y_test = float(np.exp(y_test)) / float(np.exp(y_test) + 1)
+    #
+    for i in range(0, len(y_test)):
+        if y_test[i] >= 0.5:
+            y_test[i] = 1
+        else:
+            y_test[i] = 0
+
+    res = []
+    for i in range(0, len(y_test)):
+        if y_test[i] == Y_test[i][0]:
+            res.append(1)
+        else:
+            res.append(0)
+
+    print(res)
+
+    return None
     #####################################################################
