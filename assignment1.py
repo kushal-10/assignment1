@@ -12,7 +12,6 @@ TWEETS_TEXT = './data/NAACL_SRW_2016_tweets.json'
 
 MODEL_DICT = {'naive-bayes': NaiveBayes, 'logreg': LogReg}
 
-
 def main():
     parser = argparse.ArgumentParser(
         description='Train naive bayes or logistic regression'
@@ -52,7 +51,7 @@ def main():
 
         # if args.test_smooth:
         #     train_smooth(train_data, test_data)
-
+        #
         # if args.feature_eng:
         #     train_feature_eng(train_data, test_data)
     else:

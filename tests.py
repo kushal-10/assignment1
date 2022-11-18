@@ -14,136 +14,97 @@ prior = {}
 classes = []
 V = []
 
-def main():
-    (train_data, test_data) = read_hate_tweets(TWEETS_ANNO, TWEETS_TEXT)
-    alpha = 1
-    # train(train_data, alpha)
-    # X = ["I", "DO", "BELIEVE", "LIFE", "IS", "GOOD"]
-    # predict(X)
-    c = [1 ,2, 3]
-    np.resize(c, (3,1))
-    print(np.shape(c))
-    # print(r,r1)
+class resultt:
 
-def voc():
-    X = [1,2,3]
-    Y = [3,4,5]
-    return X, Y
+    def __init__(self):
+        self.X_vector_train = None
+        self.Y_vector_train = None
+        self.X_vector_test = None
+        self.Y_vector_test = None
 
+        (self.train_data, self.test_data) = read_hate_tweets(TWEETS_ANNO, TWEETS_TEXT)
+        self.X_vector_train, self.Y_vector_train = self.featurize(self.train_data,self.train_data)
+        self.X_vector_test, self.Y_vector_test = self.featurize(self.test_data, self.train_data)
 
+    def Xtr(self):
+        return self.X_vector_train
 
-def ln(x):
-    n = 10000
-    return n * ((x ** (1 / n)) - 1)
+    def Ytr(self):
+        return self.Y_vector_train
 
+    def Xte(self):
+        return self.X_vector_test
 
-def predict(x):
-    global likelihood_list
-    global prior
-    global classes
-    global V
+    def Yte(self):
+        return self.Y_vector_test
 
-    predict_list = []
-    i = 0
+    def buildw2i(self, vocab):
+        """
+        Create indexes for 'featurize()' function.
 
-    for word in x:
-        print(word)
+        Args:
+            vocab: vocabulary constructed from the training set.
 
-    for p in prior:
-        likelihood = ln(prior[p])
-        for word in x:
-            likelihood *= ln(likelihood_list[i][word])
-        i += 1
-        predict_list.append(likelihood)
+        Returns:
+            Dictionaries with word as the key and index as its value.
+        """
+        # YOUR CODE HERE
+        #################### STUDENT SOLUTION ######################
+        vocab_dict = {}
+        i = 0
+        for v in vocab:
+            vocab_dict[v] = i
+            i += 1
 
-    mle = max(predict_list)
-    mle_index = predict_list.index(mle)
-    # print(classes[mle_index])
+        return vocab_dict
 
+    def featurize(self, data, train_data):
+        """
+        Convert data into X and Y where X is the input and
+        Y is the label.
 
+        Args:
+            data: Training or test data.
+            train_data: Reference data to build vocabulary from.
 
-def train(train_data, alpha):
-    global classes  # list of all classes, each a string
-    count_classes = []  # Count of each class in training data
-    mega_doc = []  # 2D list of mega document for each class
+        Returns:
+            Matrix X and Y.
+        """
+        # YOUR CODE HERE
+        ##################### STUDENT SOLUTION #######################
+        # CREATE Vocabulary - vocab
+        test_list = []
+        for i in range(0, len(train_data)):
+            test_list += train_data[i][0]
+        test_list.sort()
 
-    # Adding new classes found from training data into list of 'classes'
-    for i in range(0, len(train_data)):
-        current_class = train_data[i][1]
-        add_flag = 1
-        for c in classes:
-            if current_class == c:
-                add_flag = 0
-
-        if add_flag == 1:
-            classes.append(train_data[i][1])
-            temp_list = [train_data[i][1]]
-            count_list = [0]
-            mega_doc.append(temp_list)
-            count_classes.append(count_list)
-
-        current_index = classes.index(train_data[i][1])
-        count_classes[current_index][0] += 1
-        for j in range(0, len(train_data[i][0])):
-            mega_doc[current_index].append(train_data[i][0][j])
-
-    # Sorting Mega Document
-    for k in range(0, len(classes)):
-        del mega_doc[k][0]
-        mega_doc[k].sort()
-
-    # Creating Unique Vocabulary V
-    temp_list = []
-    for i in range(0, len(classes)):
-        temp_list += mega_doc[i]
-    temp_list.sort()
-
-    global V
-    V.append(temp_list[0])
-    for k in range(1, len(temp_list)):
-        if temp_list[k] == temp_list[k - 1]:
-            continue
-        else:
-            V.append(temp_list[k])
-
-    # Calculating priors
-    global prior
-    for cl in range(0, len(classes)):
-        prior_temp = count_classes[cl][0] / len(train_data)
-        prior[classes[cl]] = prior_temp
-
-    # Creating word count for each class for likelihood
-    vocabulary_list = []
-    for cl in range(0, len(classes)):
-        cnt = 0
-        vocab_dict = {mega_doc[cl][0]: 1}
-        for q in range(1, len(mega_doc[cl])):
-            if mega_doc[cl][q] == V[cnt]:
-                vocab_dict[mega_doc[cl][q]] += 1
+        vocab = [test_list[0]]
+        for j in range(1, len(test_list)):
+            if test_list[j] == test_list[j - 1]:
+                continue
             else:
-                tempcnt = 0
-                for tc in range(cnt + 1, len(V)):
-                    tempcnt += 1
-                    if mega_doc[cl][q] == V[tc]:
-                        vocab_dict[mega_doc[cl][q]] = 1
+                vocab.append(test_list[j])
+
+        # vocab = vocab[0:5]
+        # Getting Vocabulary dictionary
+        vocab_dict = buildw2i(vocab)
+
+        # Creating X and Y matrices
+        X = np.zeros((len(data), len(vocab)))
+        Y = np.zeros((len(data), 2))
+
+        for i1 in range(0, len(data)):
+            for word1 in data[i1][0]:
+                for word2 in vocab:
+                    if word1 == word2:
+                        this_value = vocab_dict[word2]
+                        X[i1][this_value] = 1
                         break
-                    else:
-                        vocab_dict[V[tc]] = 0
-                cnt += tempcnt
 
-        vocabulary_list.append(vocab_dict)
+            if data[i1][1] == 'offensive':
+                Y[i1][0] = 1
+            else:
+                Y[i1][1] = 1
 
-    global likelihood_list
-    for i in range(0, len(vocabulary_list)):
-        likelihood = {}
-        for key in vocabulary_list[i]:
-            curr_count = vocabulary_list[i][key]
-            lk = (curr_count + alpha) / (len(mega_doc[i]) + alpha * len(V))
-            likelihood[key] = lk
-        likelihood_list.append(likelihood)
+        return X, Y
 
-    # print(likelihood_list[0]['!'])
-
-
-if __name__ == "__main__":
-    main()

@@ -19,6 +19,7 @@ def accuracy(classifier, data):
             tp += 1
         if truth_class == 'nonoffensive' and classifier_class == 'nonoffensive':
             tn += 1
+
     acc = (tp + tn)/len(data)
     return acc
     ################################################################
