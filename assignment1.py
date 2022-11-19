@@ -23,18 +23,18 @@ def main():
         help='{naive-bayes, logreg}', type=str,
         required=True
     )
+
+    parser.add_argument(
+        '--test_smooth', dest='test_smooth',
+        help='Train and test Naive Bayes with varying smoothing parameter k',
+        action='store_true'
+    )
     #
-    # parser.add_argument(
-    #     '--test_smooth', dest='test_smooth',
-    #     help='Train and test Naive Bayes with varying smoothing parameter k',
-    #     action='store_true'
-    # )
-    #
-    # parser.add_argument(
-    #     '--feature_eng', dest='feature_eng',
-    #     help='Train and test Naive Bayes with different feature types',
-    #     action='store_true'
-    # )
+    parser.add_argument(
+        '--feature_eng', dest='feature_eng',
+        help='Train and test Naive Bayes with different feature types',
+        action='store_true'
+    )
 
     args = parser.parse_args()
 
@@ -45,15 +45,16 @@ def main():
     # print(test_data[0])
     if args.model == 'naive-bayes':
         print("Training naive bayes classifier...")
-        nb = model.train(train_data)
-        print("Accuracy: ", accuracy(nb, test_data))
-        print("F_1: ", f_1(nb, test_data))
+        # nb = model.train(train_data)
+        # print("Accuracy: ", accuracy(nb, test_data))
+        # print("F_1: ", f_1(nb, test_data))
 
-        # if args.test_smooth:
-        #     train_smooth(train_data, test_data)
-        #
-        # if args.feature_eng:
-        #     train_feature_eng(train_data, test_data)
+        if args.test_smooth:
+            print('Plotting accuracy/f1 vs k values graph .... ')
+            train_smooth(train_data, test_data)
+
+        if args.feature_eng:
+            train_feature_eng(train_data, test_data)
     else:
         print("Training logistic regression classifier...")
         train_logreg(train_data, test_data)

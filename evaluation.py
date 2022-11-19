@@ -14,7 +14,7 @@ def accuracy(classifier, data):
     tn = 0
     for t in range(0, len(data)):
         truth_class = data[t][1]
-        classifier_class = classifier.predict(data[t])
+        classifier_class = classifier.predict(data[t][0])
         if truth_class == 'offensive' and classifier_class == 'offensive':
             tp += 1
         if truth_class == 'nonoffensive' and classifier_class == 'nonoffensive':
@@ -39,22 +39,25 @@ def f_1(classifier, data):
     ##################### STUDENT SOLUTION #########################
     # YOUR CODE HERE
     tp = 0
+    tn = 0
     fn = 0
     fp = 0
     for t in range(0, len(data)):
         truth_class = data[t][1]
-        classifier_class = classifier.predict(data[t])
+        classifier_class = classifier.predict(data[t][0])
         if truth_class == 'offensive' and classifier_class == 'offensive':
             tp += 1
-        if truth_class == 'offensive' and classifier_class == 'nonoffensive':
-            fn += 1
-        if truth_class == 'nonoffensive' and classifier_class == 'offensive':
+        elif truth_class == 'nonoffensive' and classifier_class == 'nonoffensive':
+            tn += 1
+        elif truth_class == 'nonoffensive' and classifier_class == 'offensive':
             fp += 1
+        else:
+            fn += 1
 
-    prec = tp/(tp+fp)
-    rec = tp/(tp+fn)
+    precision = tp/(tp+fp)
+    recall = tp/(tp+fn)
     beta = 1
 
-    f1 = (beta*beta + 1)*(prec*rec)/(beta*beta*prec + rec)
+    f1 = (beta*beta + 1)*(precision*recall)/(beta*beta*precision + recall)
     return f1
     ################################################################
