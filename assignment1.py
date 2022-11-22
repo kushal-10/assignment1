@@ -1,5 +1,6 @@
 import argparse
-
+import warnings
+warnings.filterwarnings("ignore")
 from utils import read_hate_tweets
 from evaluation import accuracy, f_1
 from model.naivebayes import NaiveBayes
@@ -45,15 +46,16 @@ def main():
     # print(test_data[0])
     if args.model == 'naive-bayes':
         print("Training naive bayes classifier...")
-        # nb = model.train(train_data)
-        # print("Accuracy: ", accuracy(nb, test_data))
-        # print("F_1: ", f_1(nb, test_data))
+        nb = model.train(train_data)
+        print("Accuracy: ", accuracy(nb, test_data))
+        print("F_1: ", f_1(nb, test_data))
 
         if args.test_smooth:
-            print('Plotting accuracy/f1 vs k values graph .... ')
+            print('Accuracy and f1 vs k values graph... (Takes around 3.4 minutes for each k value)')
             train_smooth(train_data, test_data)
 
         if args.feature_eng:
+            print('Implementing Feature Engg... ')
             train_feature_eng(train_data, test_data)
     else:
         print("Training logistic regression classifier...")

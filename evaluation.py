@@ -10,6 +10,7 @@ def accuracy(classifier, data):
     """
     ##################### STUDENT SOLUTION #########################
     # YOUR CODE HERE
+    # INITIALIZING TRUE POSITIVES AND TRUE NEGATIVES TP, TN
     tp = 0
     tn = 0
     for t in range(0, len(data)):
@@ -20,6 +21,7 @@ def accuracy(classifier, data):
         if truth_class == 'nonoffensive' and classifier_class == 'nonoffensive':
             tn += 1
 
+    # CALCULATING ACCURACY
     acc = (tp + tn)/len(data)
     return acc
     ################################################################
@@ -38,6 +40,7 @@ def f_1(classifier, data):
     """
     ##################### STUDENT SOLUTION #########################
     # YOUR CODE HERE
+    # INITIALIZING TRUE POSITIVES, TRUE NEGATIVES, FALSE NEGATIVES AND FALSE POSITIVES TP, TN, FN, FP
     tp = 0
     tn = 0
     fn = 0
@@ -54,10 +57,12 @@ def f_1(classifier, data):
         else:
             fn += 1
 
+    # CALCULATING PRECISION AND RECALL
     precision = tp/(tp+fp)
     recall = tp/(tp+fn)
     beta = 1
 
+    # CALCULATING F1 SCORE
     f1 = (beta*beta + 1)*(precision*recall)/(beta*beta*precision + recall)
     return f1
     ################################################################
