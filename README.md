@@ -1,2 +1,2 @@
 # assignment1
-assignment 1 ANLP
+Twitter hate speech detection using Naive Bayes and Logistic Regression
